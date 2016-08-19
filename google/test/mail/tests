@@ -1,0 +1,24 @@
+ var user = require("../../user");
+
+try {
+  var user = new user.User({username:"some.user@gmail.com"});
+  var gmail = user.getMailManager({email : "some.user@gmail.com"});
+  var filter = gmail.createFilter();
+  filter.setQuery(filter.subject("Some Text")).AND(filter.isUnread());
+  var results = {};
+  results.listMessages = gmail.listMessages(filter);
+  if (results.listMessages && results.listMessages.length > 0) {
+    
+    var dto = {
+      id: results.listMessages[0].id,
+      format: gmail.format.minimal,
+      markAsRead: true
+    };
+    
+    results.getMessage = gmail.getMessage(dto);
+  }
+  
+  return results;
+}catch(exception){
+  return exception;
+}
